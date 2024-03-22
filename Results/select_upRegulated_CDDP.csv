@@ -1,0 +1,370 @@
+Ensembl_ID_CDDP,gene_biotype,external_gene_name,description
+ENSG00000004961,HCCS,holocytochrome c synthase 
+ENSG00000005486,RHBDD2,rhomboid domain containing 2 
+ENSG00000006327,TNFRSF12A,TNF receptor superfamily member 12A 
+ENSG00000009724,MASP2,MBL associated serine protease 2 
+ENSG00000010319,SEMA3G,semaphorin 3G 
+ENSG00000011052,NME1-NME2,NME1-NME2 readthrough 
+ENSG00000013275,PSMC4,proteasome 26S subunit, ATPase 4 
+ENSG00000020129,NCDN,neurochondrin 
+ENSG00000042445,RETSAT,retinol saturase 
+ENSG00000047634,SCML1,Scm polycomb group protein like 1 
+ENSG00000053438,NNAT,neuronatin 
+ENSG00000058729,RIOK2,RIO kinase 2 
+ENSG00000059769,DNAJC25,DnaJ heat shock protein family (Hsp40) member C25 
+ENSG00000067334,DNTTIP2,deoxynucleotidyltransferase terminal interacting protein 2 
+ENSG00000068028,RASSF1,Ras association domain family member 1 
+ENSG00000070404,FSTL3,follistatin like 3 
+ENSG00000074582,BCS1L,BCS1 homolog, ubiquinol-cytochrome c reductase complex chaperone 
+ENSG00000085465,OVGP1,oviductal glycoprotein 1 
+ENSG00000087087,SRRT,serrate, RNA effector molecule 
+ENSG00000099901,RANBP1,RAN binding protein 1 
+ENSG00000100263,RHBDD3,rhomboid domain containing 3 
+ENSG00000100462,PRMT5,protein arginine methyltransferase 5 
+ENSG00000100664,EIF5,eukaryotic translation initiation factor 5 
+ENSG00000101181,MTG2,mitochondrial ribosome associated GTPase 2 
+ENSG00000101361,NOP56,NOP56 ribonucleoprotein 
+ENSG00000101412,E2F1,E2F transcription factor 1 
+ENSG00000101856,PGRMC1,progesterone receptor membrane component 1 
+ENSG00000102393,GLA,galactosidase alpha 
+ENSG00000104825,NFKBIB,NFKB inhibitor beta 
+ENSG00000104899,AMH,anti-Mullerian hormone 
+ENSG00000104907,TRMT1,tRNA methyltransferase 1 
+ENSG00000106328,FSCN3,fascin actin-bundling protein 3 
+ENSG00000106591,MRPL32,mitochondrial ribosomal protein L32 
+ENSG00000108773,KAT2A,lysine acetyltransferase 2A 
+ENSG00000109519,GRPEL1,GrpE like 1, mitochondrial 
+ENSG00000110104,CCDC86,coiled-coil domain containing 86 
+ENSG00000112599,GUCA1B,guanylate cyclase activator 1B 
+ENSG00000113070,HBEGF,heparin binding EGF like growth factor 
+ENSG00000114767,RRP9,ribosomal RNA processing 9, U3 small nucleolar RNA binding protein 
+ENSG00000116717,GADD45A,growth arrest and DNA damage inducible alpha 
+ENSG00000117036,ETV3,ETS variant transcription factor 3 
+ENSG00000117395,EBNA1BP2,EBNA1 binding protein 2 
+ENSG00000118600,RXYLT1,ribitol xylosyltransferase 1 
+ENSG00000121577,POPDC2,popeye domain containing 2 
+ENSG00000125812,GZF1,GDNF inducible zinc finger protein 1 
+ENSG00000126215,XRCC3,X-ray repair cross complementing 3 
+ENSG00000126524,SBDS,SBDS ribosome maturation factor 
+ENSG00000126759,CFP,complement factor properdin 
+ENSG00000126814,TRMT5,tRNA methyltransferase 5 
+ENSG00000127564,PKMYT1,protein kinase, membrane associated tyrosine/threonine 1 
+ENSG00000127824,TUBA4A,tubulin alpha 4a 
+ENSG00000129028,THAP10,THAP domain containing 10 
+ENSG00000129194,SOX15,SRY-box transcription factor 15 
+ENSG00000129932,DOHH,deoxyhypusine hydroxylase 
+ENSG00000130176,CNN1,calponin 1 
+ENSG00000130305,NSUN5,NOP2/Sun RNA methyltransferase 5 
+ENSG00000130518,IQCN,IQ motif containing N 
+ENSG00000130706,ADRM1,ADRM1 26S proteasome ubiquitin receptor 
+ENSG00000130726,TRIM28,tripartite motif containing 28 
+ENSG00000130821,SLC6A8,solute carrier family 6 member 8 
+ENSG00000131470,PSMC3IP,PSMC3 interacting protein 
+ENSG00000131471,AOC3,amine oxidase copper containing 3 
+ENSG00000131480,AOC2,amine oxidase copper containing 2 
+ENSG00000131845,ZNF304,zinc finger protein 304 
+ENSG00000132406,TMEM128,transmembrane protein 128 
+ENSG00000132768,DPH2,diphthamide biosynthesis 2 
+ENSG00000133316,WDR74,WD repeat domain 74 
+ENSG00000135469,COQ10A,coenzyme Q10A 
+ENSG00000136271,DDX56,DEAD-box helicase 56 
+ENSG00000136718,IMP4,IMP U3 small nucleolar ribonucleoprotein 4 
+ENSG00000136881,BAAT,bile acid-CoA:amino acid N-acyltransferase 
+ENSG00000137267,TUBB2A,tubulin beta 2A class IIa 
+ENSG00000137434,C6orf52,chromosome 6 open reading frame 52 
+ENSG00000138161,CUZD1,CUB and zona pellucida like domains 1 
+ENSG00000139880,CDH24,cadherin 24 
+ENSG00000140403,DNAJA4,DnaJ heat shock protein family (Hsp40) member A4 
+ENSG00000140691,ARMC5,armadillo repeat containing 5 
+ENSG00000141086,CTRL,chymotrypsin like 
+ENSG00000141682,PMAIP1,phorbol-12-myristate-13-acetate-induced protein 1 
+ENSG00000141965,FEM1A,fem-1 homolog A 
+ENSG00000141994,DUS3L,dihydrouridine synthase 3 like 
+ENSG00000142396,ERVK3-1,endogenous retrovirus group K3 member 1 
+ENSG00000143110,C1orf162,chromosome 1 open reading frame 162 
+ENSG00000143368,SF3B4,splicing factor 3b subunit 4 
+ENSG00000143621,ILF2,interleukin enhancer binding factor 2 
+ENSG00000144485,HES6,hes family bHLH transcription factor 6 
+ENSG00000144867,SRPRB,SRP receptor subunit beta 
+ENSG00000146094,DOK3,docking protein 3 
+ENSG00000146670,CDCA5,cell division cycle associated 5 
+ENSG00000146707,POMZP3,POM121 and ZP3 fusion 
+ENSG00000146826,TRAPPC14,trafficking protein particle complex subunit 14 
+ENSG00000146856,AGBL3,AGBL carboxypeptidase 3 
+ENSG00000147174,GCNA,germ cell nuclear acidic peptidase 
+ENSG00000147437,GNRH1,gonadotropin releasing hormone 1 
+ENSG00000147955,SIGMAR1,sigma non-opioid intracellular receptor 1 
+ENSG00000148229,POLE3,DNA polymerase epsilon 3, accessory subunit 
+ENSG00000148339,SLC25A25,solute carrier family 25 member 25 
+ENSG00000149564,ESAM,endothelial cell adhesion molecule 
+ENSG00000149716,LTO1,LTO1 maturation factor of ABCE1 
+ENSG00000149930,TAOK2,TAO kinase 2 
+ENSG00000150459,SAP18,Sin3A associated protein 18 
+ENSG00000152117,transcribed_SMPD4BP,sphingomyelin phosphodiesterase 4B, pseudogene 
+ENSG00000154640,BTG3,BTG anti-proliferation factor 3 
+ENSG00000155287,SLC25A28,solute carrier family 25 member 28 
+ENSG00000156697,UTP14A,UTP14A small subunit processome component 
+ENSG00000158526,TSR2,TSR2 ribosome maturation factor 
+ENSG00000158717,RNF166,ring finger protein 166 
+ENSG00000158869,FCER1G,Fc epsilon receptor Ig 
+ENSG00000160072,ATAD3B,ATPase family AAA domain containing 3B 
+ENSG00000160336,ZNF761,zinc finger protein 761 
+ENSG00000160401,CFAP157,cilia and flagella associated protein 157 
+ENSG00000160818,GPATCH4,G-patch domain containing 4 (gene/pseudogene) 
+ENSG00000160949,TONSL,tonsoku like, DNA repair protein 
+ENSG00000162144,CYB561A3,cytochrome b561 family member A3 
+ENSG00000162231,NXF1,nuclear RNA export factor 1 
+ENSG00000162734,PEA15,proliferation and apoptosis adaptor protein 15 
+ENSG00000162775,RBM15,RNA binding motif protein 15 
+ENSG00000163132,MSX1,msh homeobox 1 
+ENSG00000163376,KBTBD8,kelch repeat and BTB domain containing 8 
+ENSG00000164053,ATRIP,ATR interacting protein 
+ENSG00000164082,GRM2,glutamate metabotropic receptor 2 
+ENSG00000164404,GDF9,growth differentiation factor 9 
+ENSG00000164406,LEAP2,liver enriched antimicrobial peptide 2 
+ENSG00000165684,SNAPC4,small nuclear RNA activating complex polypeptide 4 
+ENSG00000165689,ENTR1,endosome associated trafficking regulator 1 
+ENSG00000166562,SEC11C,SEC11 homolog C, signal peptidase complex subunit 
+ENSG00000166582,CENPV,centromere protein V 
+ENSG00000167034,NKX3-1,NK3 homeobox 1 
+ENSG00000167302,TEPSIN,TEPSIN adaptor related protein complex 4 accessory protein 
+ENSG00000167378,IRGQ,immunity related GTPase Q 
+ENSG00000167447,SMG8,SMG8 nonsense mediated mRNA decay factor 
+ENSG00000167515,TRAPPC2L,trafficking protein particle complex subunit 2L 
+ENSG00000167807,novel transcript
+ENSG00000168003,SLC3A2,solute carrier family 3 member 2 
+ENSG00000168811,IL12A,interleukin 12A 
+ENSG00000170161,FAM88B,family with sequence similarity 88 member B 
+ENSG00000170364,SETMAR,SET domain and mariner transposase fusion gene 
+ENSG00000170684,ZNF296,zinc finger protein 296 
+ENSG00000172301,COPRS,coordinator of PRMT5 and differentiation stimulator 
+ENSG00000172748,ZNF596,zinc finger protein 596 
+ENSG00000173349,SFT2D3,SFT2 domain containing 3 
+ENSG00000173530,TNFRSF10D,TNF receptor superfamily member 10d 
+ENSG00000173805,HAP1,huntingtin associated protein 1 
+ENSG00000174365,SNHG11,small nucleolar RNA host gene 11 
+ENSG00000174744,BRMS1,BRMS1 transcriptional repressor and anoikis regulator 
+ENSG00000174996,KLC2,kinesin light chain 2 
+ENSG00000175166,PSMD2,proteasome 26S subunit ubiquitin receptor, non-ATPase 2 
+ENSG00000175820,CCDC168,coiled-coil domain containing 168 
+ENSG00000176170,SPHK1,sphingosine kinase 1 
+ENSG00000176381,PRR18,proline rich 18 
+ENSG00000176749,CDK5R1,cyclin dependent kinase 5 regulatory subunit 1 
+ENSG00000176919,C8G,complement C8 gamma chain 
+ENSG00000177595,PIDD1,p53-induced death domain protein 1 
+ENSG00000178381,ZFAND2A,zinc finger AN1-type containing 2A 
+ENSG00000178502,KLHL11,kelch like family member 11 
+ENSG00000179148,ALOXE3,arachidonate lipoxygenase 3 
+ENSG00000179562,GCC1,GRIP and coiled-coil domain containing 1 
+ENSG00000179988,PSTK,phosphoseryl-tRNA kinase 
+ENSG00000180385,EMC3-AS1,EMC3 antisense RNA 1 
+ENSG00000181016,LSMEM1,leucine rich single-pass membrane protein 1 
+ENSG00000181026,AEN,apoptosis enhancing nuclease 
+ENSG00000181222,POLR2A,RNA polymerase II subunit A 
+ENSG00000181991,MRPS11,mitochondrial ribosomal protein S11 
+ENSG00000182308,DCAF4L1,DDB1 and CUL4 associated factor 4 like 1 
+ENSG00000182325,FBXL6,F-box and leucine rich repeat protein 6 
+ENSG00000182685,BRICD5,BRICHOS domain containing 5 
+ENSG00000182687,GALR2,galanin receptor 2 
+ENSG00000183423,LRIT3,leucine rich repeat, Ig-like and transmembrane domains 3 
+ENSG00000183426,NPIPA1,nuclear pore complex interacting protein family member A1 
+ENSG00000183479,TREX2,three prime repair exonuclease 2 
+ENSG00000184162,NR2C2AP,nuclear receptor 2C2 associated protein 
+ENSG00000184205,TSPYL2,TSPY like 2 
+ENSG00000184697,CLDN6,claudin 6 
+ENSG00000184786,DYNLT2,dynein light chain Tctex-type 2 
+ENSG00000185115,NSMCE3,NSE3 homolog, SMC5-SMC6 complex component 
+ENSG00000185163,DDX51,DEAD-box helicase 51 
+ENSG00000185338,SOCS1,suppressor of cytokine signaling 1 
+ENSG00000186162,CIDECP1,CIDEC pseudogene 1 
+ENSG00000186166,CENATAC,centrosomal AT-AC splicing factor 
+ENSG00000186501,TMEM222,transmembrane protein 222 
+ENSG00000186834,HEXIM1,HEXIM P-TEFb complex subunit 1 
+ENSG00000187531,SIRT7,sirtuin 7 
+ENSG00000188167,TMPPE,transmembrane protein with metallophosphoesterase domain 
+ENSG00000188199,NUTM2B,NUT family member 2B 
+ENSG00000188566,NDOR1,NADPH dependent diflavin oxidoreductase 1 
+ENSG00000188993,LRRC66,leucine rich repeat containing 66 
+ENSG00000189001,SBSN,suprabasin 
+ENSG00000189120,SP6,Sp6 transcription factor 
+ENSG00000189171,S100A13,S100 calcium binding protein A13 
+ENSG00000196118,CFAP119,cilia and flagella associated protein 119 
+ENSG00000196843,ARID5A,AT-rich interaction domain 5A 
+ENSG00000197063,MAFG,MAF bZIP transcription factor G 
+ENSG00000197714,ZNF460,zinc finger protein 460 
+ENSG00000197961,ZNF121,zinc finger protein 121 
+ENSG00000198208,RPS6KL1,ribosomal protein S6 kinase like 1 
+ENSG00000198576,ARC,activity regulated cytoskeleton associated protein 
+ENSG00000198805,PNP,purine nucleoside phosphorylase 
+ENSG00000203761,unMSTO2P,misato family member 2, pseudogene 
+ENSG00000203804,ADAMTSL4-AS1,ADAMTSL4 antisense RNA 1 
+ENSG00000203811,H3C14,H3 clustered histone 14 
+ENSG00000203814,H2BC18,H2B clustered histone 18 
+ENSG00000203852,H3C15,H3 clustered histone 15 
+ENSG00000204149,AGAP6,ArfGAP with GTPase domain, ankyrin repeat and PH domain 6 
+ENSG00000204172,AGAP9,ArfGAP with GTPase domain, ankyrin repeat and PH domain 9 
+ENSG00000204256,BRD2,bromodomain containing 2 
+ENSG00000204802,FAM88C,family with sequence similarity 88 member C 
+ENSG00000204947,ZNF425,zinc finger protein 425 
+ENSG00000210082,Mt_rRNA,MT-RNR2,mitochondrially encoded 16S rRNA 
+ENSG00000211454,AKR7L,aldo-keto reductase family 7 like (gene/pseudogene) 
+ENSG00000211459,Mt_rRNA,MT-RNR1,mitochondrially encoded 12S rRNA 
+ENSG00000213139,CRYGS,crystallin gamma S 
+ENSG00000213221,DNLZ,DNL-type zinc finger 
+ENSG00000213385,RPL7AP39,ribosomal protein L7a pseudogene 39 
+ENSG00000213433,transcribed_RPLP1P6,ribosomal protein lateral stalk subunit P1 pseudogene 6 
+ENSG00000213542,RPL7AP43,ribosomal protein L7a pseudogene 43 
+ENSG00000213658,LAT,linker for activation of T cells 
+ENSG00000213906,LTB4R2,leukotriene B4 receptor 2 
+ENSG00000215014,novel transcript
+ENSG00000215041,NEURL4,neuralized E3 ubiquitin protein ligase 4 
+ENSG00000215458,AATBC,apoptosis associated transcript in bladder cancer 
+ENSG00000216490,IFI30,IFI30 lysosomal thiol reductase 
+ENSG00000220201,ZGLP1,zinc finger GATA like protein 1 
+ENSG00000221883,ARIH2OS,ARIH2 opposite strand lncRNA 
+ENSG00000222043,novel transcript
+ENSG00000224046,DMTF1-AS1,DMTF1 antisense RNA 1 
+ENSG00000224281,SLC25A5-AS1,SLC25A5 antisense RNA 1 
+ENSG00000224358,TMCO1-AS1,TMCO1 antisense RNA 1 
+ENSG00000224420,ADM5,adrenomedullin 5 (putative) 
+ENSG00000224635,novel transcript
+ENSG00000225345,SNX18P3,sorting nexin 18 pseudogene 3 
+ENSG00000225648,SBDSP1,SBDS pseudogene 1 
+ENSG00000225828,FAM229A,family with sequence similarity 229 member A 
+ENSG00000227354,RBM26-AS1,RBM26 antisense RNA 1 
+ENSG00000227518,MIR1302-9HG,MIR1302-9 host gene 
+ENSG00000227896,WAPL-DT,WAPL divergent transcript 
+ENSG00000227908,IL6ST-DT,IL6ST divergent transcript 
+ENSG00000228409,CCT6P1,chaperonin containing TCP1 subunit 6 pseudogene 1 
+ENSG00000229178,novel transcript
+ENSG00000229544,NKX1-2,NK1 homeobox 2 
+ENSG00000230280,HNRNPA1P59,heterogeneous nuclear ribonucleoprotein A1 pseudogene 59 
+ENSG00000230337,EXOSC10-AS1,EXOSC10 antisense RNA 1 
+ENSG00000230359,transcribed_TPI1P2,triosephosphate isomerase 1 pseudogene 2 
+ENSG00000230736,novel transcript
+ENSG00000231305,IFT122P3,IFT122 pseudogene 3 
+ENSG00000231784,transcribed_unitary_pseudogene,DBIL5P,diazepam binding inhibitor-like 5, pseudogene 
+ENSG00000232956,SNHG15,small nucleolar RNA host gene 15 
+ENSG00000233822,H2BC15,H2B clustered histone 15 
+ENSG00000234585,CCT6P3,chaperonin containing TCP1 subunit 6 pseudogene 3 
+ENSG00000234912,SNHG20,small nucleolar RNA host gene 20 
+ENSG00000235090,RPL7L1P3,ribosomal protein L7 like 1 pseudogene 3 
+ENSG00000235529,AGAP1-IT1,AGAP1 intronic transcript 1 
+ENSG00000236255,novel transcript
+ENSG00000241360,PDXP,pyridoxal phosphatase 
+ENSG00000241370,RPP21,ribonuclease P/MRP subunit p21 
+ENSG00000242028,HYPK,huntingtin interacting protein K 
+ENSG00000242622,GSK3B-DT,GSK3B divergent transcript 
+ENSG00000244945,RUFY1-AS1,RUFY1 antisense RNA 1 
+ENSG00000245748, antisense to TBC1D14 and TADA2B
+ENSG00000246863,GPR176-DT,GPR176 divergent transcript 
+ENSG00000246889,CTTN-DT,CTTN divergent transcript 
+ENSG00000246922,UBAP1L,ubiquitin associated protein 1 like 
+ENSG00000247092,SNHG10,small nucleolar RNA host gene 10 
+ENSG00000247373,TMED2-DT,TMED2 divergent transcript 
+ENSG00000249459,ZNF286B,zinc finger protein 286B (pseudogene) 
+ENSG00000249850,KRT18P31,keratin 18 pseudogene 31 
+ENSG00000250673,REELD1,reeler domain containing 1 
+ENSG00000252690,TEC
+ENSG00000254473,UBQLN1-AS1,UBQLN1 antisense RNA 1 
+ENSG00000254634,unSMG1P6,SMG1 pseudogene 6 
+ENSG00000254858,MPV17L2,MPV17 mitochondrial inner membrane protein like 2 
+ENSG00000254911,SCARNA9,small Cajal body-specific RNA 9 
+ENSG00000255198,SNHG9,small nucleolar RNA host gene 9 
+ENSG00000255224,TEC
+ENSG00000255624,transcribed_C10orf88B,C10orf88B (pseudogene) 
+ENSG00000255717,SNHG1,small nucleolar RNA host gene 1 
+ENSG00000256453,DND1,DND microRNA-mediated repression inhibitor 1 
+ENSG00000257950,P2RX5-TAX1BP3,P2RX5-TAX1BP3 readthrough (NMD candidate) 
+ENSG00000258311,novel protein
+ENSG00000258568,RHOQP1,ras homolog family member Q pseudogene 1 
+ENSG00000258738,BAZ1A-AS1,BAZ1A antisense RNA 1 
+ENSG00000259529,novel transcript
+ENSG00000259802,MARCHF6-DT,MARCHF6 divergent transcript 
+ENSG00000259818,CZIB-DT,CZIB divergent transcript 
+ENSG00000260007,novel protein
+ENSG00000260325,HSPB9,heat shock protein family B (small) member 9 
+ENSG00000260339,HEXA-AS1,HEXA antisense RNA 1 
+ENSG00000260342,novel protein
+ENSG00000260367, antisense to SPNS1
+ENSG00000260589,STAM-DT,STAM divergent transcript 
+ENSG00000260778,MIR3677HG,MIR3677 and MIR940 host gene 
+ENSG00000260806,PAPOLA-DT,PAPOLA divergent transcript 
+ENSG00000260942,CAPN10-DT,CAPN10 divergent transcript 
+ENSG00000260948, sense overlapping WDR77 & OVGP1
+ENSG00000261087,ZNNT1,ZNF706 neighboring transcript 1 
+ENSG00000261360,OTULIN-DT,OTULIN divergent transcript 
+ENSG00000261556,SMG1P7,SMG1 pseudogene 7 
+ENSG00000261716,H2BC20P,H2B clustered histone 20, pseudogene 
+ENSG00000261758,STAG1-DT,STAG1 divergent transcript 
+ENSG00000261884,novel transcript
+ENSG00000262202,novel transcript
+ENSG00000263823, antisense to KIAA1012
+ENSG00000263990,novel transcript
+ENSG00000267322,SNHG22,small nucleolar RNA host gene 22 
+ENSG00000267342, antisense to MRPL38
+ENSG00000267673,FDX2,ferredoxin 2 
+ENSG00000268403, antisense to ZNF143
+ENSG00000268798,novel transcript
+ENSG00000269846, antisense to RBL1
+ENSG00000270332,SMC2-DT,SMC2 divergent transcript 
+ENSG00000270673,YTHDF3-DT,YTHDF3 divergent transcript 
+ENSG00000272056, antisense to AGBL5
+ENSG00000272103,novel transcript
+ENSG00000272145,NFYC-AS1,NFYC antisense RNA 1 
+ENSG00000272631, antisense to BMPR1A
+ENSG00000272677,HNRNPD-DT,HNRNPD divergent transcript 
+ENSG00000272768, antisense to PURB
+ENSG00000272843, antisense to POM121
+ENSG00000272994,C2orf49-DT,C2orf49 divergent transcript 
+ENSG00000273199, antisense to MORC3
+ENSG00000274213,novel transcript
+ENSG00000274270, sense intronic to DLEU1
+ENSG00000274292,novel transcript
+ENSG00000274925,ZKSCAN2-DT,ZKSCAN2 divergent transcript 
+ENSG00000275198,LINC02960,long intergenic non-protein coding RNA 2960 
+ENSG00000275401,novel transcript
+ENSG00000275437, sense intronic to CABLES2
+ENSG00000275807, antisense to ATXN2L
+ENSG00000276603, sense intronic to BLCAP
+ENSG00000277161,PIGW,phosphatidylinositol glycan anchor biosynthesis class W 
+ENSG00000277182, antisense to PCGF2
+ENSG00000277597, antisense to PRPF8
+ENSG00000277895, antisense to TBK1
+ENSG00000278922,novel transcript
+ENSG00000278963,TEC
+ENSG00000279026,TEC
+ENSG00000279048,tec
+ENSG00000279086,TEC
+ENSG00000279259,TEC
+ENSG00000279283,novel transcript
+ENSG00000279452,TEC
+ENSG00000279602,TEC
+ENSG00000279608,TEC
+ENSG00000279641,TEC
+ENSG00000279656,TEC
+ENSG00000279696,novel transcript
+ENSG00000279762, antisense to PSMD11
+ENSG00000279901,tec
+ENSG00000279953,novel transcript
+ENSG00000280129,TEC
+ENSG00000280152,TEC
+ENSG00000280162,TEC
+ENSG00000280184,TEC
+ENSG00000280213,UCKL1-AS1,UCKL1 antisense RNA 1 
+ENSG00000280239,TEC
+ENSG00000280254,TEC
+ENSG00000280614, similar to YY1 associated myogenesis RNA 1 YAM1
+ENSG00000280800, similar to YY1 associated myogenesis RNA 1 YAM1
+ENSG00000281181, similar to YY1 associated myogenesis RNA 1 YAM1
+ENSG00000281207,SLFNL1-AS1,SLFNL1 antisense RNA 1 
+ENSG00000281383, similar to YY1 associated myogenesis RNA 1 YAM1
+ENSG00000282021,novel transcript
+ENSG00000282542,TEC
+ENSG00000282936,novel protein
+ENSG00000283078,novel transcript
+ENSG00000284526,novel protein
+ENSG00000285230,RALY-AS1,RALY antisense RNA 1 
+ENSG00000285292,ABCF2-H2BK1,ABCF2-H2BK1 readthrough 
+ENSG00000285589,novel transcript
+ENSG00000285763, antisense to C6orf52

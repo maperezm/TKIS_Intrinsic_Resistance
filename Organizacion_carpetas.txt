@@ -1,0 +1,16 @@
+~/home/
+	-bin #Scripts tanto de R como de bash
+		Functions #Funciones de R
+	-Results #
+		-STAR_Files
+		-RSEM_files
+			-TXT
+			-Todas las carpetas con gene.results
+		-RStudio_Results
+		-Trimmomatic_Files
+		-FASTQC_Files
+	-Data
+		-Human_Reference
+		-FASTA_Files
+		-STAR_Index
+		-Survival_CSV
