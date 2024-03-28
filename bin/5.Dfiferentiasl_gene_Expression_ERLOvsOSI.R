@@ -306,13 +306,12 @@ png("/Results/Barplot_osi.png",width = 2300, height = 1850,res = 200)
 Barplot_osi
 dev.off()
 #######Treeplot
+d <- godata('org.Hs.eg.db', ont="BP")
 
-
-c<- enrichplot::pairwise_termsim(ego_ERLO) 
-d<- enrichplot::pairwise_termsim(ego_Osi) 
+c<- enrichplot::pairwise_termsim(ego_ERLO, method = "Wang", semData = d) 
+dd<- enrichplot::pairwise_termsim(ego_Osi) 
 
 treeplot(c)
 treeplot(d)
-
 
 sessionInfo()
