@@ -20,19 +20,25 @@
 enhanced_volcano_plot <- function(dge_obj, title_graph, 
                                 FDR_cutoff = 0.05,logFC_cutoff=NA,
                                   point_size = 2.5, titlesize = 22, 
-                                  legendSize = 18, select_label = NA
+                                  legendSize = 18, select_label=NA
                                 ) {
   
   # Biomart query to retrieve gene information
   biomart_info <- getBM(
-    attributes = c("ensembl_gene_id", "gene_biotype"),
-    filters = "ensembl_gene_id",
-    values = dge_obj,
-    mart = mart_version
+    attributes = c("ensembl_gene_id", 
+                   "gene_biotype",
+                   "external_gene_name"),
+    filters    = "ensembl_gene_id",
+    values     = dge_obj,
+    mart       = mart_version
   )
   
   # Merge gene biotype information with dge_obj
   dge_obj <- merge(dge_obj, biomart_info, by = 1)
+  
+  # Define external gene names as rownames
+  rownames(dge_obj) <- dge_obj$ensembl_gene_id
+  
   
   # Define color based on conditions
   dge_obj <- dge_obj %>%
@@ -56,20 +62,22 @@ enhanced_volcano_plot <- function(dge_obj, title_graph,
   
   # Generate volcano plot
   volcano_p <- EnhancedVolcano(
-    dge_obj,x = "logFC",y="FDR",
-    lab = rownames(dge_obj),
+    dge_obj,
+    x = "logFC",
+    y="FDR",
+    lab = dge_obj$external_gene_name,
     title = title_graph,
     drawConnectors = TRUE,
     pCutoff = 0.05,
     FCcutoff = logFC_cutoff,
     pointSize = point_size,
-    colAlpha = 12 / 16,
+    colAlpha = 9 / 16,
     titleLabSize = titlesize,
     caption = "",
     colCustom = keyvals_colour_y,
-    selectLab = select_label,
-    boxedLabels = FALSE,
-    colConnectors = NULL,
+    #selectLab = as.character(dge_obj$external_gene_name)[which(names(keyvals_colour_y) %in% c('lncRNA up significatives', 'lncRNA dow significatives'))],  
+    selectLab= select_label,
+    boxedLabels = T,
     labCol = 'black',
     labFace = 'bold',
     subtitle = NULL,
@@ -159,25 +167,30 @@ kaplan_meier_plot <- function( fit_obj, legend_title, data_surv)
   return(plot_1)  
 }
 
-################ Sort names 
-# Define a function to sort a vector and assign names to it
-sort_and_assign_names <- function(input_vector, names_vector, decreasing = TRUE) {
-  sorted_vector <- sort(input_vector, decreasing = decreasing)
-  names(sorted_vector) <- names_vector
-  return(sorted_vector)
+
+# Define a function to sort a dataframe by two columns and assign names to rows
+sort_and_assign_names_df <- function(input_df, col1, col2, decreasing1 = TRUE, decreasing2 = TRUE) {
+  sorted_df <- input_df[order(input_df[[col1]], input_df[[col2]], decreasing = c(decreasing1, decreasing2)), ]
+  rownames(sorted_df) <- paste(input_df[[col1]], input_df[[col2]], sep = "_")
+  return(sorted_df)
 }
 
 ########
 # Get additional gene information from Biomart
 
-get_gene_info <- function(data_frame_list=NA){
+get_gene_info <- function(data_frame_list=NA, filter_select="ensembl_gene_id"){
 
 biomart_info <- getBM(
-  attributes = c("ensembl_gene_id","external_gene_name", "entrezgene_id", "gene_biotype", "description"),
-  filters = "ensembl_gene_id",
+  attributes = c("ensembl_gene_id",
+                 "external_gene_name", 
+                 "entrezgene_id", 
+                 "gene_biotype", 
+                 "description"),
+  filters = filter_select,
   values = data_frame_list,  # Use filtered gene IDs for Biomart query
   mart = mart_version  # Replace with your Biomart Mart object
 )
 }
+
 
 
