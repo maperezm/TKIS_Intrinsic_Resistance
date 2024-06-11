@@ -25,7 +25,7 @@ here <- here("~/Dropbox/Trabajo/Repositorios/Intrinsicr_Resistance/TKIS/") #prin
 setwd(here)
 
 # Source functions
-source("Functions/functions.R")
+source("bin/functions.R")
 
 # Use Mart
 mart_version <-  useMart( biomart='ENSEMBL_MART_ENSEMBL', dataset='hsapiens_gene_ensembl')
@@ -45,9 +45,11 @@ samples <- mutate(samples,
 files_genes <- file.path(dir, samples$sample, paste0(samples$sample, ".genes.results"))
 
 # Check if files exist
-if (!all(file.exists(files_genes))) {
-  stop("Some files do not exist.")
-}
+missing_files <- files_genes[!file.exists(files_genes)]
+if (length(missing_files) > 0) {
+  cat("Los siguientes archivos no están presentes:\n")
+  cat(paste("- ", missing_files, "\n", sep = ""), sep = "")
+  }
 
 # Load files using tximport
 txi.rsem_genes <- tximport(files_genes, 
@@ -96,7 +98,7 @@ row.names(samples) <- samples$sample
 
 
 ##Plot the results using relative expression in each sample
-pdf("/Results/mdplot_all.pdf", width = 10, height = 10, pointsize = 12)
+pdf("Results/mdplot_all.pdf", width = 10, height = 10, pointsize = 12)
 par(mfrow = c(2, 2)) # 2 rows, 2 columns
 for (i in 1:ncol(edgeRlist)) {
   plotMD(cpm(edgeRlist, log = TRUE), column = i, 
@@ -112,7 +114,7 @@ pca <- pca(cpm(edgeRlist$counts, log = T,
                normalized.lib.sizes = T), 
            scale= T, metadata= samples)
 
-pdf("/Results/PCAplot.pdf", width = 14, height = 10.2)
+pdf("Results/PCAplot.pdf", width = 14, height = 10.2)
 biplot(pca, 
        lab = colnames(edgeRlist$counts), 
        pointSize = 5, 
@@ -139,7 +141,7 @@ colnames(design) <- levels(edgeRlist$samples$group)
 edgeRlist <- estimateDisp(edgeRlist, design = design, robust = T)
 
 ##Visualize the dispersion levels
-png("../Results/data_dispersion.png", height = 700, width = 800)
+png("Results/data_dispersion.png", height = 700, width = 800)
 plotBCV(edgeRlist)
 dev.off()
 
@@ -174,15 +176,15 @@ geneQLF_HCC4006_DMSOvsControl <- glmQLFTest(fit, coef = ncol(fit$design), contra
 
 
 #Obtain DGE with lFC 1 and FDR = 0.05 
-is.de.gene_HCC4006_ERLOvsControl <- decideTestsDGE(geneQLF_HCC4006_ERLOvsControl ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
-is.de.gene_HCC827_ERLOvsControl  <- decideTestsDGE(geneQLF_HCC827_ERLOvsControl  ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
-is.de.gene_H1975_OSIvsControl    <- decideTestsDGE(geneQLF_H1975_OSIvsControl    ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
-is.de.gene_HCC827_OSIvsControl   <- decideTestsDGE(geneQLF_HCC827_OSIvsControl   ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
-is.de.gene_HCC4006_OSIvsControl  <- decideTestsDGE(geneQLF_HCC4006_OSIvsControl  ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
-is.de.gene_HCC4006_DMSOvsControl <- decideTestsDGE(geneQLF_HCC4006_DMSOvsControl ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
-is.de.gene_HCC827_DMSOvsControl  <- decideTestsDGE(geneQLF_HCC827_DMSOvsControl  ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
-is.de.gene_HCC827_DMSOvsControl  <- decideTestsDGE(geneQLF_HCC827_DMSOvsControl  ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
-is.de.gene_HCC4006_DMSOvsControl <- decideTestsDGE(geneQLF_HCC4006_DMSOvsControl ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
+is.de.gene_HCC4006_ERLOvsControl <- decideTests(geneQLF_HCC4006_ERLOvsControl ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
+is.de.gene_HCC827_ERLOvsControl  <- decideTests(geneQLF_HCC827_ERLOvsControl  ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
+is.de.gene_H1975_OSIvsControl    <- decideTests(geneQLF_H1975_OSIvsControl    ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
+is.de.gene_HCC827_OSIvsControl   <- decideTests(geneQLF_HCC827_OSIvsControl   ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
+is.de.gene_HCC4006_OSIvsControl  <- decideTests(geneQLF_HCC4006_OSIvsControl  ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
+is.de.gene_HCC4006_DMSOvsControl <- decideTests(geneQLF_HCC4006_DMSOvsControl ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
+is.de.gene_HCC827_DMSOvsControl  <- decideTests(geneQLF_HCC827_DMSOvsControl  ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
+is.de.gene_HCC827_DMSOvsControl  <- decideTests(geneQLF_HCC827_DMSOvsControl  ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
+is.de.gene_HCC4006_DMSOvsControl <- decideTests(geneQLF_HCC4006_DMSOvsControl ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
 
 
 ##Visualize how many genes rejected the null hypothesis with a FDR threshold of 0.05
@@ -268,31 +270,29 @@ Biomart_common_RNA_OSI <- get_gene_info(upRNA_OSI_list )
 write.table(file = "../Results/select_upRegulated_OSI.csv", Biomart_common_RNA_OSI, quote = F, sep= ",", row.names = F)
 
 #######EGO Analysis####
-
-
 ego_ERLO <- enrichGO(gene      = Biomart_common_RNA_ERLO$ensembl_gene_id,
                      OrgDb     = org.Hs.eg.db,
                      keyType   = 'ENSEMBL',
-                     ont       = "ALL", pvalueCutoff = 1)
+                     ont       = "ALL", pvalueCutoff = 0.5)
 
-Barplot_ERLO <- barplot(ego_ERLO,
-                        font.size = 21.5,
-                        title = "enrichGO erlotinib Overexpressed RNAs") +
-                      theme(plot.title   = element_text(size = 23.5,face = "bold"),
-                      legend.title = element_text(size = 23.5,face = "bold"), 
-                      legend.text  =  element_text(size = 23.5,face = "bold"))
+png("Results/Barplot_ERLO.png",width = 2300, height = 1850,res = 200)
 
-png("../Results/Barplot_ERLO.png",width = 2300, height = 1850,res = 200)
-Barplot_ERLO
+barplot(ego_ERLO, font.size = 21.5,
+                  title = "enrichGO erlotinib Overexpressed RNAs") +
+                  theme(plot.title   = element_text(size = 23.5,face = "bold"),
+                  legend.title = element_text(size = 23.5,face = "bold"), 
+                  legend.text  =  element_text(size = 23.5,face = "bold"))
 dev.off()
+
+
 ego_Osi <- enrichGO(gene      = Biomart_common_RNA_OSI$ensembl_gene_id,
                     OrgDb     = org.Hs.eg.db,
                     keyType   = 'ENSEMBL',
                     ont       = "ALL", 
                     pvalueCutoff = 1)
 
-
-Barplot_osi <- barplot(ego_Osi,
+png("/Results/Barplot_osi.png",width = 2300, height = 1850,res = 200)
+ barplot(ego_Osi,
                        font.size = 21.5,
                        title = "enrichGO osimertinib Overexpressed RNAs") +
                  theme(plot.title   = element_text(size = 23.5,face = "bold"),
@@ -300,18 +300,104 @@ Barplot_osi <- barplot(ego_Osi,
                  legend.text  =  element_text(size = 23.5,face = "bold"))
 
 
-
-
-png("/Results/Barplot_osi.png",width = 2300, height = 1850,res = 200)
-Barplot_osi
 dev.off()
 #######Treeplot
-d <- godata('org.Hs.eg.db', ont="BP")
 
-c<- enrichplot::pairwise_termsim(ego_ERLO, method = "Wang", semData = d) 
+c<- enrichplot::pairwise_termsim(ego_ERLO) 
 dd<- enrichplot::pairwise_termsim(ego_Osi) 
 
 treeplot(c)
 treeplot(d)
 
 sessionInfo()
+
+
+
+
+
+
+
+
+
+
+########Select Upregulated gnes in common in all tratments 
+HCC827_ERLOvsControl_RNA_down   <- select_RNA(geneDE_HCC827_ERLOvsControl, FDR_value = 0.05,  logFC_Value = -1  )
+HCC4006_ERLOvsControl_RNA_down  <- select_RNA(geneDE_HCC4006_ERLOvsControl,FDR_value = 0.05,  logFC_Value = -1  )
+H1975_OSIvsControl_RNA_down     <- select_RNA(geneDE_H1975_OSIvsControl  , FDR_value = 0.05,  logFC_Value = -1  ) 
+HCC827_OSIvsControl_RNA_down    <- select_RNA(geneDE_HCC827_OSIvsControl , FDR_value = 0.05,  logFC_Value = -1  ) 
+HCC4006_OSIvsControl_RNA_down   <- select_RNA(geneDE_HCC4006_OSIvsControl, FDR_value = 0.05,  logFC_Value = -1  ) 
+
+
+
+
+
+
+
+########Venn ERLO
+venn_ERLO_downRNA <- list( HCC4006= HCC4006_ERLOvsControl_RNA_down$genes,
+                         HCC827= HCC827_ERLOvsControl_RNA_down$genes)
+
+#Create a list with downregulated RNA present in all grodowns
+Venn_ERLO_down = Venn(venn_ERLO_downRNA)
+downRNA_ERLO_list <- as.data.frame(overlap(Venn_ERLO_down, slice = "all"))
+colnames(downRNA_ERLO_list) <- "Ensembl_ID_ERLO"
+
+#obtain External gene name to RNA up-regulated
+Biomart_common_RNA_ERLO_down <- get_gene_info(downRNA_ERLO_list)
+write.table(file = "Results/select_downRegulated_ERLO.csv", Biomart_common_RNA_ERLO_down, quote = F, sep= ",", row.names = F)
+
+
+venn_OSI_downRNA <-  list( HCC4006 = HCC4006_OSIvsControl_RNA_down$genes,  #list to obtain common RNA in all residual cells
+                           HCC827  = HCC827_OSIvsControl_RNA_down$genes,
+                           H1975   = H1975_OSIvsControl_RNA_down$genes)
+
+#Create a list with downregulated RNA present in all grodowns
+Venn_OSI_down = Venn(venn_OSI_downRNA)
+downRNA_OSI_list <- as.data.frame(overlap(Venn_OSI_down, slice = "all"))
+colnames(downRNA_OSI_list) <- "Ensembl_ID_OSI"
+
+#obtain External gene name to RNA down-regulated
+Biomart_common_RNA_OSI_down <- get_gene_info(downRNA_OSI_list )
+write.table(file = "Results/select_downRegulated_OSI.csv", Biomart_common_RNA_OSI_down, quote = F, sep= ",", row.names = F)
+
+#######EGO Analysis####
+ego_ERLO_down <- enrichGO(gene      = Biomart_common_RNA_ERLO_down$ensembl_gene_id,
+                     OrgDb     = org.Hs.eg.db,
+                     keyType   = 'ENSEMBL',
+                     ont       = "all", pvalueCutoff = 0.05)
+barplot(ego_ERLO_down,
+  font.size = 21.5,
+  title = "enrichGO erlotinib Overexpressed RNAs") +
+  theme(plot.title   = element_text(size = 23.5,face = "bold"),
+        legend.title = element_text(size = 23.5,face = "bold"), 
+        legend.text  =  element_text(size = 23.5,face = "bold"))
+
+
+
+
+
+ego_Osidown <- enrichGO(gene      = Biomart_common_RNA_OSI_dowmn$ensembl_gene_id,
+                    OrgDb     = org.Hs.eg.db,
+                    keyType   = 'ENSEMBL',
+                    ont       = "ALL", 
+                    pvalueCutoff = 0.05)
+
+barplot(ego_Osidown,
+        font.size = 21.5,
+        title = "enrichGO osimertinib Overexpressed RNAs") +
+  theme(plot.title   = element_text(size = 23.5,face = "bold"),
+        legend.title = element_text(size = 23.5,face = "bold"), 
+        legend.text  =  element_text(size = 13.5,face = "bold"))
+
+png("Results/Barplot_down_osi.png",width = 2300, height = 1850,res = 200)
+dd<- enrichplot::pairwise_termsim(ego_Osidown) 
+treeplot(dd,   showCategory = 22) + ggtitle("enrichGO by downregulated genes in osimertinib residual cells") +
+  theme(plot.title   = element_text(size = 23.5,face = "bold"), 
+        legend.title = element_text(size = 13.5,face = "bold"))
+dev.off()
+
+sessionInfo()
+
+
+
+
