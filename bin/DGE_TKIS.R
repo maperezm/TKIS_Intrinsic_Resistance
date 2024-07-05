@@ -313,13 +313,6 @@ sessionInfo()
 
 
 
-
-
-
-
-
-
-
 ########Select Upregulated gnes in common in all tratments 
 HCC827_ERLOvsControl_RNA_down   <- select_RNA(geneDE_HCC827_ERLOvsControl, FDR_value = 0.05,  logFC_Value = -1  )
 HCC4006_ERLOvsControl_RNA_down  <- select_RNA(geneDE_HCC4006_ERLOvsControl,FDR_value = 0.05,  logFC_Value = -1  )
@@ -389,9 +382,9 @@ barplot(ego_Osidown,
         legend.title = element_text(size = 23.5,face = "bold"), 
         legend.text  =  element_text(size = 13.5,face = "bold"))
 
-png("Results/Barplot_down_osi.png",width = 2300, height = 1850,res = 200)
+png("Results/Barplot_down_osi.png",width = 3500, height = 2350,res = 250)
 dd<- enrichplot::pairwise_termsim(ego_Osidown) 
-treeplot(dd,   showCategory = 22) + ggtitle("enrichGO by downregulated genes in osimertinib residual cells") +
+treeplot(dd,   showCategory = 22) + ggtitle("enrichGO by underregulated genes in osimertinib residual cells") +
   theme(plot.title   = element_text(size = 23.5,face = "bold"), 
         legend.title = element_text(size = 13.5,face = "bold"))
 dev.off()
