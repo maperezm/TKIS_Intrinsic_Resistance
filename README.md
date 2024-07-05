@@ -49,5 +49,5 @@ Affiliation: Instituto Nacional de Enfermedades Respiratorias
 
 5. License
 
-This script is licensed under the [insert license type, e.g., MIT License]. Please see the LICENSE file for more details.
+This script is licensed under the AFL-3.0. Please see the LICENSE file for more details.
 
