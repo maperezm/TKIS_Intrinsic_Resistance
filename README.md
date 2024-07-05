@@ -21,6 +21,8 @@ BiocManager
 biomaRt
 dplyr
 tidyverse
+
+
 3. Installation
 
 To install the necessary R packages, you can run the following commands in your R environment:
@@ -33,6 +35,9 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 BiocManager::install(c("DESeq2", "edgeR", "TXimnport", "org.Hs.eg.db", "clusterProfiler", "biomaRt"))
 
 install.packages(c("ggplot2", "EnhancedVolcano", "VennDiagram", "dplyr", "tidyverse"))
+
+
+
 4. Usage
 
 4.1 Data Preparation
