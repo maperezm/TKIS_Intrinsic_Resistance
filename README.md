@@ -45,6 +45,8 @@ For questions or issues regarding the script, please contact:
 Author: Mario Perez-Medina
 Email: maperezm.medi@gmail.com   
 Affiliation: Instituto Nacional de Enfermedades Respiratorias
+
+
 5. License
 
 This script is licensed under the [insert license type, e.g., MIT License]. Please see the LICENSE file for more details.
