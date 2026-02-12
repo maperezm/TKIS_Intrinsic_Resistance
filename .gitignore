@@ -140,3 +140,5 @@ debug.log
 .DS_Store
 .DS_Store
 TKI_Data.RData
+Results/
+.DS_Store

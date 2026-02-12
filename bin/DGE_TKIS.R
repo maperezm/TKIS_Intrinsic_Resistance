@@ -19,8 +19,9 @@ packages <- c("edgeR"       ,  "tximport",
 # Check and install packages
 lapply(packages, check_and_install)
 
+
 # Set working directory
-here <- here("~/Dropbox/Trabajo/Repositorios/Intrinsicr_Resistance/TKIS/") #principal path directory where you put dowload the files
+here <- here("~/Library/CloudStorage/Dropbox/Trabajo/Repositorios/Intrinsicr_Resistance/TKIS ") #principal path directory where you put dowload the files
 
 setwd(here)
 
@@ -207,13 +208,13 @@ geneDE_HCC4006_OSIvsControl   <- as.data.frame(topTags(geneQLF_HCC4006_OSIvsCont
 
 
 ##Create a volcanoplot with enhanced_volcano_plot function filtering by logFC, pValue and RNA  
-p1 <- enhanced_volcano_plot(geneDE_HCC4006_ERLOvsControl , "HCC4006"  ,  logFC_cutoff = 1,FDR_cutoff = 0.05, titlesize = 75,legendSize = 27)
+p1 <- enhanced_volcano_plot(geneDE_HCC4006_ERLOvsControl , "HCC4006"  , logFC_cutoff = 1,FDR_cutoff  = 0.05, titlesize = 75,legendSize = 27)
 p2 <- enhanced_volcano_plot(geneDE_HCC827_ERLOvsControl  , "HCC827"   ,  logFC_cutoff = 1,FDR_cutoff  = 0.05, titlesize = 75,legendSize = 27)
 p3 <- enhanced_volcano_plot(geneDE_HCC827_OSIvsControl   , "HCC827"   ,  logFC_cutoff = 1,FDR_cutoff  = 0.05, titlesize = 75,legendSize = 27)
 p5 <- enhanced_volcano_plot(geneDE_H1975_OSIvsControl    , "H1975"    ,  logFC_cutoff = 1,FDR_cutoff  = 0.05, titlesize = 75,legendSize = 27)
 p4 <- enhanced_volcano_plot(geneDE_HCC4006_OSIvsControl  , "HCC4006"  ,  logFC_cutoff = 1,FDR_cutoff  = 0.05, titlesize = 75,legendSize = 27)
 
-png("Volcano_plot_2.png", width =5300, height =1050)
+png("Volcano_plot_2.png", width =3300, height =950)
 grid.arrange(p1,p2, p3,p4,p5,ncol=5)
 dev.off()
 
@@ -267,7 +268,13 @@ dev.off()
 
 #obtain External gene name to RNA up-regulated
 Biomart_common_RNA_OSI <- get_gene_info(upRNA_OSI_list )
-write.table(file = "../Results/select_upRegulated_OSI.csv", Biomart_common_RNA_OSI, quote = F, sep= ",", row.names = F)
+write.csv(file = "Results/select_upRegulated_OSI.csv", Biomart_common_RNA_OSI, quote = F, row.names = F)
+
+
+write.csv(Biomart_common_RNA_OSI$external_gene_name,file = "Results/select_upRegulated_OSI_1.csv",  quote = F, row.names = F)
+
+
+
 
 #######EGO Analysis####
 ego_ERLO <- enrichGO(gene      = Biomart_common_RNA_ERLO$ensembl_gene_id,
@@ -309,7 +316,6 @@ dd<- enrichplot::pairwise_termsim(ego_Osi)
 treeplot(c)
 treeplot(d)
 
-sessionInfo()
 
 
 
@@ -391,6 +397,23 @@ dev.off()
 
 sessionInfo()
 
+
+
+
+
+
+
+
+library(rDGIdb)
+
+drugs_osi <- read.table("~/Downloads/gene_interaction_results-10_22_2024.tsv", sep = "\t", header = T)
+
+
+interactions_drugs <- read.csv("~/OneDrive - ASOCIACION PARA EVITAR LA CEGUERA EN MEXICO IAP/Tesis(APEC)/Transcrip_PP_Xim/RNA_seq_Penfigoide_Pterigion/DE_analysis/Data/interactions.tsv", sep = "\t", header = T)
+
+genes <- c(Biomart_common_RNA_ERLO$external_gene_name)
+
+resultFilter <- queryDGIdb(genes)
 
 
 

@@ -44,9 +44,9 @@ enhanced_volcano_plot <- function(dge_obj, title_graph,
   dge_obj <- dge_obj %>%
     mutate(color = case_when(
       FDR <= FDR_cutoff & logFC <= -logFC_cutoff & gene_biotype != "lncRNA" ~ "#6495ED",  # Blue for downregulated non-lncRNA genes
-      FDR <= FDR_cutoff & logFC <= -logFC_cutoff & gene_biotype == "lncRNA" ~ "brown",  # Purple for downregulated lncRNA genes
+      FDR <= FDR_cutoff & logFC <= -logFC_cutoff & gene_biotype == "lncRNA" ~ "brown",  # #116530 for downregulated lncRNA genes
       FDR < FDR_cutoff & logFC >= logFC_cutoff & gene_biotype != "lncRNA" ~ "#cc0000",   # Red for upregulated non-lncRNA genes
-      FDR <= FDR_cutoff & logFC >= logFC_cutoff & gene_biotype == "lncRNA" ~ "purple",   # Purple for upregulated lncRNA genes
+      FDR <= FDR_cutoff & logFC >= logFC_cutoff & gene_biotype == "lncRNA" ~ "#116530",   # #116530 for upregulated lncRNA genes
       TRUE ~ "grey50"  # Grey for other cases
     ))
   
@@ -57,13 +57,16 @@ enhanced_volcano_plot <- function(dge_obj, title_graph,
   names(keyvals_colour_y)[keyvals_colour_y == 'grey50'] <- 'non significatives'
   names(keyvals_colour_y)[keyvals_colour_y == '#cc0000'] <- 'mRNA upregulates'
   names(keyvals_colour_y)[keyvals_colour_y == '#6495ED'] <- 'mRNA downregulates'
-  names(keyvals_colour_y)[keyvals_colour_y == 'purple'] <- 'lncRNA up significatives'
+  names(keyvals_colour_y)[keyvals_colour_y == '#116530'] <- 'lncRNA up significatives'
   names(keyvals_colour_y)[keyvals_colour_y == 'brown'] <- 'lncRNA dow significatives'
+  
+  
   
   # Generate volcano plot
   volcano_p <- EnhancedVolcano(
     dge_obj,
     x = "logFC",
+    ylim = c(0,9),
     y="FDR",
     lab = dge_obj$external_gene_name,
     title = title_graph,
