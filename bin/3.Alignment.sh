@@ -1,30 +1,95 @@
-#!bin/bash
+#!/bin/bash
 
-###Alignment of reads
-#Create a directory to store the index 
-mkdir -p ../index
+# ============================================================================
+# Script: 3.Alignment.sh
+# Purpose: Genome alignment and transcriptome quantification for RNA-seq reads
+# Tools: STAR (Spliced Transcripts Alignment to a Reference)
+# Input: Quality-filtered paired-end FASTQ files
+# Output: BAM files (coordinate-sorted), transcriptome SAM files for RSEM
+# ============================================================================
 
-#Create the index for the human genome
-STAR --runThreadN 24 \ #Number of cores
-    --runMode genomeGenerate \ #Option to generate the index
-     --genomeDir ../index \ #Path to store the index
-     --genomeFastaFiles ../genome/Homo_sapiens.GRCh38.dna.primary_assembly.fa \ #Path to the fasta file of the genome
-     --sjdbGTFfile ../annotation/Homo_sapiens.GRCh38.83.gtf \ #Path to the gtf file of the annotation
-    --sjdbOverhang 100
+# Load configuration from config.sh
+# Edit config.sh with your local paths before running this script
+source ../config.sh
 
-#Align the reads using STAR
-for i in {1..18}; do # make aligment of all samples
-printf "\n"
-echo "t0$i"?
-#Generate the list with the name of the forward (r1) and reverse (r2) files
-r1="t0$i-R1.clean.paired.fastq.gz" #names asigment after trimming 
-r2="t0$i-R2.clean.paired.fastq.gz"
-STAR --genomeDir ../index \ #Path to the index previously generated
-     --runThreadN 32 \ #Number of cores
-     --readFilesIn ../data/$r1 ../data/$r2 \ #Path to the forward and reverse reads
-     --outFileNamePrefix ../data/t0$i \ #Prefix for the output
-     --outSAMtype BAM SortedByCoordinate \ #Specify the type of file in the output (BAM format)
-     --quantMode TranscriptomeSAM
-done 
+# ============================================================================
+# Step 1: Generate STAR genome index
+# ============================================================================
+# Creates a searchable index of the human genome with splice junction information
+# This step only needs to be run once per reference genome
+# Runtime: ~1-2 hours depending on system resources
 
+echo "Step 1: Creating STAR genome index..."
+echo "Genome FASTA: ${GENOME_FASTA}"
+echo "Annotation GTF: ${ANNOTATION_GTF}"
+echo "Output index directory: ${INDEX_DIR}"
 
+mkdir -p "${INDEX_DIR}"
+
+STAR \
+  --runThreadN "${N_THREADS}" \
+  --runMode genomeGenerate \
+  --genomeDir "${INDEX_DIR}" \
+  --genomeFastaFiles "${GENOME_FASTA}" \
+  --sjdbGTFfile "${ANNOTATION_GTF}" \
+  --sjdbOverhang "${STAR_OVERHANG}"
+
+echo "Step 1 complete: Genome index created."
+
+# ============================================================================
+# Step 2: Align reads to genome using STAR
+# ============================================================================
+# Align quality-filtered reads to the reference genome
+# - Generates coordinate-sorted BAM files for downstream analysis
+# - Generates transcriptome BAM files for RSEM quantification
+# Runtime: ~30-60 minutes per sample depending on file size and resources
+
+echo ""
+echo "Step 2: Aligning reads to genome with STAR..."
+echo "Index directory: ${INDEX_DIR}"
+echo "Output directory: ${STAR_OUTPUT_DIR}"
+
+mkdir -p "${STAR_OUTPUT_DIR}"
+
+for sample_num in $(seq -f "%02g" 1 "${N_SAMPLES}"); do
+  sample_name="${SAMPLE_PREFIX}${sample_num}"
+  
+  r1_in="${TRIMMED_DIR}/${sample_name}-R1.clean.final.fastq.gz"
+  r2_in="${TRIMMED_DIR}/${sample_name}-R2.clean.final.fastq.gz"
+  
+  # Check if input files exist before processing
+  if [ ! -f "${r1_in}" ] || [ ! -f "${r2_in}" ]; then
+    echo "WARNING: Input files not found for ${sample_name}"
+    echo "  Expected: ${r1_in}"
+    echo "  Expected: ${r2_in}"
+    continue
+  fi
+  
+  echo "Processing: ${sample_name}"
+  
+  # Run STAR alignment
+  STAR \
+    --genomeDir "${INDEX_DIR}" \
+    --runThreadN "${N_THREADS}" \
+    --readFilesIn "${r1_in}" "${r2_in}" \
+    --readFilesCommand zcat \
+    --outFileNamePrefix "${STAR_OUTPUT_DIR}/${sample_name}." \
+    --outSAMtype BAM "${STAR_BAM_SORT}" \
+    --quantMode TranscriptomeSAM
+    
+  echo "Alignment complete for: ${sample_name}"
+  
+done
+
+echo ""
+echo "Step 2 complete: All samples aligned."
+echo ""
+echo "============================================================"
+echo "Alignment pipeline complete!"
+echo "============================================================"
+echo "Output BAM files (coordinate-sorted): ${STAR_OUTPUT_DIR}/*.Aligned.sortedByCoord.out.bam"
+echo "Output transcriptome SAM (for RSEM): ${STAR_OUTPUT_DIR}/*.Aligned.toTranscriptome.out.sam"
+
+# ============================================================================
+# END OF SCRIPT
+# ============================================================================
