@@ -1,41 +1,89 @@
 ##Script designed to perform DE analysis from persistent cells 
-# Check if a package is installed and install it if not
-check_and_install <- function(package){
-  if (!require(package, character.only = TRUE)){
-    install.packages(package)
-    library(package, character.only = TRUE)
-  }
+# Required packages
+required_packages <- c(
+  "edgeR",
+  "tximport",
+  "ggplot2",
+  "gridExtra",
+  "tidyverse",
+  "RVenn",
+  "biomaRt",
+  "EnhancedVolcano",
+  "pheatmap",
+  "PCAtools",
+  "clusterProfiler",
+  "RColorBrewer",
+  "org.Hs.eg.db",
+  "enrichplot"
+)
+
+missing_packages <- required_packages[
+  !vapply(required_packages, requireNamespace, logical(1), quietly = TRUE)
+]
+
+if (length(missing_packages) > 0) {
+  stop(
+    "Missing required R packages: ",
+    paste(missing_packages, collapse = ", "),
+    ". Install the required CRAN/Bioconductor packages before running."
+  )
 }
 
-# List of packages
-packages <- c("edgeR"       ,  "tximport", 
-              "ggplot2"     ,  "gridExtra", 
-              "tidyverse"   ,  "RVenn", 
-              "biomaRt"     ,  "EnhancedVolcano", 
-              "pheatmap"    ,  "PCAtools",
-              "clusterProfiler", "RColorBrewer", 
-              "org.Hs.eg.db", "here","enrichplot")
+invisible(lapply(
+  required_packages,
+  function(pkg) {
+    suppressPackageStartupMessages(
+      library(pkg, character.only = TRUE)
+    )
+  }
+))
 
-# Check and install packages
-lapply(packages, check_and_install)
+# Load project-specific paths and analysis settings.
+# Copy config.example.R to config.R and edit local paths before running.
+script_args <- commandArgs(trailingOnly = FALSE)
+script_file_arg <- grep("^--file=", script_args, value = TRUE)
 
+if (length(script_file_arg) > 0) {
+  script_file <- normalizePath(
+    sub("^--file=", "", script_file_arg[1]),
+    mustWork = TRUE
+  )
+  PROJECT_ROOT_DEFAULT <- normalizePath(
+    file.path(dirname(script_file), ".."),
+    mustWork = TRUE
+  )
+} else {
+  PROJECT_ROOT_DEFAULT <- normalizePath(getwd(), mustWork = TRUE)
+}
 
-# Set working directory
-here <- here("~/Library/CloudStorage/Dropbox/Trabajo/Repositorios/Intrinsicr_Resistance/TKIS ") #principal path directory where you put dowload the files
+config_file <- file.path(PROJECT_ROOT_DEFAULT, "config.R")
 
-setwd(here)
+if (!file.exists(config_file)) {
+  stop(
+    "config.R was not found. Copy config.example.R to config.R ",
+    "and edit the local paths before running the analysis."
+  )
+}
 
-# Source functions
-source("bin/functions.R")
+source(config_file)
 
-# Use Mart
-mart_version <-  useMart( biomart='ENSEMBL_MART_ENSEMBL', dataset='hsapiens_gene_ensembl')
+dir.create(R_RESULTS_DIR, recursive = TRUE, showWarnings = FALSE)
 
-# Set RSEM_directory
-dir <- ("~/maperezm.medi@gmail.com - Google Drive/My Drive/Doctorado_Driv/RNAseq/Analisis_Expresion/RSEM") #path you put RSEM files and TXT with description files
+# Source project helper functions
+source(file.path(PROJECT_ROOT, "bin", "functions.R"))
+
+# Ensembl BioMart connection used by get_gene_info()
+mart_version <- useMart(
+  biomart = BIOMART_MART,
+  dataset = BIOMART_DATASET
+)
 
 # Read samples
-samples <- read.table(file.path(here, "Data/sample_Persistent.txt"), he =T)
+samples <- read.table(
+  SAMPLE_METADATA_FILE,
+  header = TRUE,
+  stringsAsFactors = FALSE
+)
 
 # Extract conditions and cell line information
 samples <- mutate(samples, 
@@ -43,14 +91,16 @@ samples <- mutate(samples,
    Cell_line = str_extract(samples$sample, "HCC827|HCC4006|H1975"))
 
 # Construct file paths
-files_genes <- file.path(dir, samples$sample, paste0(samples$sample, ".genes.results"))
+files_genes <- file.path(RSEM_DIR, samples$sample, paste0(samples$sample, ".genes.results"))
 
 # Check if files exist
 missing_files <- files_genes[!file.exists(files_genes)]
 if (length(missing_files) > 0) {
-  cat("Los siguientes archivos no están presentes:\n")
-  cat(paste("- ", missing_files, "\n", sep = ""), sep = "")
-  }
+  stop(
+    "Missing RSEM gene-result files:\n",
+    paste(missing_files, collapse = "\n")
+  )
+}
 
 # Load files using tximport
 txi.rsem_genes <- tximport(files_genes, 
@@ -71,7 +121,9 @@ counts <- counts[!rows_with_na, ]
 
 
 # Filter genes with low abundance
-genes_pass_filter <- rowSums(cpm(counts, log = T) > 1) > 2
+genes_pass_filter <- rowSums(
+  cpm(counts, log = TRUE) > LOG_CPM_THRESHOLD
+) >= MIN_SAMPLES_LOG_CPM
 
 ##Visualize how many genes passed the filtering criteria
 table(genes_pass_filter)
@@ -80,7 +132,9 @@ table(genes_pass_filter)
 counts <- counts[genes_pass_filter, ]
 
 ##Create a factor object to indicate the experimental conditions
-groups <- factor(sub("..$", "", names(counts))) ##"..$" indicates substitute the two last characters with "" (nothing)
+groups <- factor(
+  paste(samples$Cell_line, samples$Condition, sep = "_")
+)
 table(groups)
 
 ##Store the counts and the groups in an edgeR object
@@ -90,7 +144,7 @@ edgeRlist <- DGEList(counts = counts,
 
 
 ##Calculate the normalization factors using the TMM method
-edgeRlist <- calcNormFactors(edgeRlist, method = "TMM")
+edgeRlist <- calcNormFactors(edgeRlist, method = NORMALIZATION_METHOD)
 
 ##Visualize the normalization factors
 edgeRlist$samples
@@ -99,7 +153,7 @@ row.names(samples) <- samples$sample
 
 
 ##Plot the results using relative expression in each sample
-pdf("Results/mdplot_all.pdf", width = 10, height = 10, pointsize = 12)
+pdf(file.path(R_RESULTS_DIR, "mdplot_all.pdf"), width = 10, height = 10, pointsize = 12)
 par(mfrow = c(2, 2)) # 2 rows, 2 columns
 for (i in 1:ncol(edgeRlist)) {
   plotMD(cpm(edgeRlist, log = TRUE), column = i, 
@@ -115,7 +169,7 @@ pca <- pca(cpm(edgeRlist$counts, log = T,
                normalized.lib.sizes = T), 
            scale= T, metadata= samples)
 
-pdf("Results/PCAplot.pdf", width = 14, height = 10.2)
+pdf(file.path(R_RESULTS_DIR, "PCAplot.pdf"), width = 14, height = 10.2)
 biplot(pca, 
        lab = colnames(edgeRlist$counts), 
        pointSize = 5, 
@@ -142,21 +196,21 @@ colnames(design) <- levels(edgeRlist$samples$group)
 edgeRlist <- estimateDisp(edgeRlist, design = design, robust = T)
 
 ##Visualize the dispersion levels
-png("Results/data_dispersion.png", height = 700, width = 800)
+png(file.path(R_RESULTS_DIR, "data_dispersion.png"), height = 700, width = 800)
 plotBCV(edgeRlist)
 dev.off()
 
 ##Get the contrast matrix compared residual cells vs Control cells 
-contrast <- makeContrasts("HCC827_ERLO"  = "HCC827_ERLO  - HCC827_CONTROL" ,
-                          "HCC827_DMSO"  = "HCC827_DMSO  - HCC827_CONTROL" ,
-                          "HCC4006_ERLO" = "HCC4006_ERLO - HCC4006_CONTROL", 
-                          "HCC4006_DMSO" = "HCC4006_DMSO - HCC4006_CONTROL",
-                          "H1975_OSI"    = "H1975_OSI    - H1975_CONTROL"  , 
-                          "HCC827_OSI"   = "HCC827_OSI   - HCC827_CONTROL" ,
-                          "HCC827_DMSO"  = "HCC827_DMSO  - HCC827_CONTROL" ,
-                          "HCC4006_OSI"  = "HCC4006_OSI  - HCC4006_CONTROL", 
-                          "HCC4006_DMSO" = "HCC4006_DMSO - HCC4006_CONTROL", 
-                          levels = edgeRlist$design)
+contrast <- makeContrasts(
+  "HCC827_ERLO"  = "HCC827_ERLO - HCC827_CONTROL",
+  "HCC827_DMSO"  = "HCC827_DMSO - HCC827_CONTROL",
+  "HCC4006_ERLO" = "HCC4006_ERLO - HCC4006_CONTROL",
+  "HCC4006_DMSO" = "HCC4006_DMSO - HCC4006_CONTROL",
+  "H1975_OSI"    = "H1975_OSI - H1975_CONTROL",
+  "HCC827_OSI"   = "HCC827_OSI - HCC827_CONTROL",
+  "HCC4006_OSI"  = "HCC4006_OSI - HCC4006_CONTROL",
+  levels = design
+)
 
 ##Adjust data to a negative bi-nomial generalized linear model
 fit <- glmQLFit(edgeRlist, 
@@ -165,15 +219,13 @@ fit <- glmQLFit(edgeRlist,
 
 
 ##Test the null hypothesis in which lfc of genes in the residual cells are zero respect to Control cells # nolint
-geneQLF_HCC4006_ERLOvsControl <- glmQLFTest(fit, coef = ncol(fit$design), contrast = contrast[, "HCC4006_ERLO"])
-geneQLF_HCC827_ERLOvsControl  <- glmQLFTest(fit, coef = ncol(fit$design), contrast = contrast[, "HCC827_ERLO"])
-geneQLF_H1975_OSIvsControl    <- glmQLFTest(fit, coef = ncol(fit$design), contrast = contrast[, "H1975_OSI"])
-geneQLF_HCC827_OSIvsControl   <- glmQLFTest(fit, coef = ncol(fit$design), contrast = contrast[, "HCC827_OSI"])
-geneQLF_HCC4006_OSIvsControl  <- glmQLFTest(fit, coef = ncol(fit$design), contrast = contrast[, "HCC4006_OSI"])
-geneQLF_HCC4006_DMSOvsControl <- glmQLFTest(fit, coef = ncol(fit$design), contrast = contrast[, "HCC4006_DMSO"])
-geneQLF_HCC827_DMSOvsControl  <- glmQLFTest(fit, coef = ncol(fit$design), contrast = contrast[, "HCC827_DMSO"])
-geneQLF_HCC827_DMSOvsControl  <- glmQLFTest(fit, coef = ncol(fit$design), contrast = contrast[, "HCC827_DMSO"])
-geneQLF_HCC4006_DMSOvsControl <- glmQLFTest(fit, coef = ncol(fit$design), contrast = contrast[, "HCC4006_DMSO"])
+geneQLF_HCC4006_ERLOvsControl <- glmQLFTest(fit, contrast = contrast[, "HCC4006_ERLO"])
+geneQLF_HCC827_ERLOvsControl  <- glmQLFTest(fit, contrast = contrast[, "HCC827_ERLO"])
+geneQLF_H1975_OSIvsControl    <- glmQLFTest(fit, contrast = contrast[, "H1975_OSI"])
+geneQLF_HCC827_OSIvsControl   <- glmQLFTest(fit, contrast = contrast[, "HCC827_OSI"])
+geneQLF_HCC4006_OSIvsControl  <- glmQLFTest(fit, contrast = contrast[, "HCC4006_OSI"])
+geneQLF_HCC4006_DMSOvsControl <- glmQLFTest(fit, contrast = contrast[, "HCC4006_DMSO"])
+geneQLF_HCC827_DMSOvsControl  <- glmQLFTest(fit, contrast = contrast[, "HCC827_DMSO"])
 
 
 #Obtain DGE with lFC 1 and FDR = 0.05 
@@ -184,8 +236,6 @@ is.de.gene_HCC827_OSIvsControl   <- decideTests(geneQLF_HCC827_OSIvsControl   , 
 is.de.gene_HCC4006_OSIvsControl  <- decideTests(geneQLF_HCC4006_OSIvsControl  ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
 is.de.gene_HCC4006_DMSOvsControl <- decideTests(geneQLF_HCC4006_DMSOvsControl ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
 is.de.gene_HCC827_DMSOvsControl  <- decideTests(geneQLF_HCC827_DMSOvsControl  ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
-is.de.gene_HCC827_DMSOvsControl  <- decideTests(geneQLF_HCC827_DMSOvsControl  ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
-is.de.gene_HCC4006_DMSOvsControl <- decideTests(geneQLF_HCC4006_DMSOvsControl ,  adjust.method = "BH", lfc = 1, p.value = 0.05)
 
 
 ##Visualize how many genes rejected the null hypothesis with a FDR threshold of 0.05
@@ -214,7 +264,7 @@ p3 <- enhanced_volcano_plot(geneDE_HCC827_OSIvsControl   , "HCC827"   ,  logFC_c
 p5 <- enhanced_volcano_plot(geneDE_H1975_OSIvsControl    , "H1975"    ,  logFC_cutoff = 1,FDR_cutoff  = 0.05, titlesize = 75,legendSize = 27)
 p4 <- enhanced_volcano_plot(geneDE_HCC4006_OSIvsControl  , "HCC4006"  ,  logFC_cutoff = 1,FDR_cutoff  = 0.05, titlesize = 75,legendSize = 27)
 
-png("Volcano_plot_2.png", width =3300, height =950)
+png(file.path(R_RESULTS_DIR, "Volcano_plot_2.png"), width =3300, height =950)
 grid.arrange(p1,p2, p3,p4,p5,ncol=5)
 dev.off()
 
@@ -237,7 +287,7 @@ Venn_ERLO = Venn(venn_ERLO_upRNA)
 upRNA_ERLO_list <- as.data.frame(overlap(Venn_ERLO, slice = "all"))
 colnames(upRNA_ERLO_list) <- "Ensembl_ID_ERLO"
 
-png ("Results/Venn_Diagram_ERLO.png", width = 1100, height = 850, units = "px")
+png (file.path(R_RESULTS_DIR, "Venn_Diagram_ERLO.png"), width = 1100, height = 850, units = "px")
 ggvenn(Venn_ERLO,
        fill = c("red", "dodgerblue3")) + 
   theme_void() +
@@ -246,7 +296,7 @@ dev.off()
 
 #obtain External gene name to RNA up-regulated
 Biomart_common_RNA_ERLO <- get_gene_info(upRNA_ERLO_list )
-write.table(file = "../Results/select_upRegulated_ERLO.csv", Biomart_common_RNA_ERLO, quote = F, sep= ",", row.names = F)
+write.table(file = file.path(R_RESULTS_DIR, "select_upRegulated_ERLO.csv"), Biomart_common_RNA_ERLO, quote = F, sep= ",", row.names = F)
 
 #######Venn OSI#####
 venn_OSI_upRNA <-  list( HCC4006 = HCC4006_OSIvsControl_RNA_up$genes,  #list to obtain common RNA in all residual cells
@@ -258,7 +308,7 @@ Venn_OSI = Venn(venn_OSI_upRNA)
 upRNA_OSI_list <- as.data.frame(overlap(Venn_OSI, slice = "all"))
 colnames(upRNA_OSI_list) <- "Ensembl_ID_OSI"
 
-png ("/Results/Venn_Diagram_OSI.png", width = 1090, height = 1020, units = "px")
+png (file.path(R_RESULTS_DIR, "Venn_Diagram_OSI.png"), width = 1090, height = 1020, units = "px")
 ggvenn(Venn_OSI,
        fill = c("red", "dodgerblue3", "deeppink")) + 
         theme_void() +
@@ -268,10 +318,10 @@ dev.off()
 
 #obtain External gene name to RNA up-regulated
 Biomart_common_RNA_OSI <- get_gene_info(upRNA_OSI_list )
-write.csv(file = "Results/select_upRegulated_OSI.csv", Biomart_common_RNA_OSI, quote = F, row.names = F)
+write.csv(file = file.path(R_RESULTS_DIR, "select_upRegulated_OSI.csv"), Biomart_common_RNA_OSI, quote = F, row.names = F)
 
 
-write.csv(Biomart_common_RNA_OSI$external_gene_name,file = "Results/select_upRegulated_OSI_1.csv",  quote = F, row.names = F)
+write.csv(Biomart_common_RNA_OSI$external_gene_name,file = file.path(R_RESULTS_DIR, "select_upRegulated_OSI_1.csv"),  quote = F, row.names = F)
 
 
 
@@ -282,7 +332,7 @@ ego_ERLO <- enrichGO(gene      = Biomart_common_RNA_ERLO$ensembl_gene_id,
                      keyType   = 'ENSEMBL',
                      ont       = "ALL", pvalueCutoff = 0.5)
 
-png("Results/Barplot_ERLO.png",width = 2300, height = 1850,res = 200)
+png(file.path(R_RESULTS_DIR, "Barplot_ERLO.png"),width = 2300, height = 1850,res = 200)
 
 barplot(ego_ERLO, font.size = 21.5,
                   title = "enrichGO erlotinib Overexpressed RNAs") +
@@ -298,7 +348,7 @@ ego_Osi <- enrichGO(gene      = Biomart_common_RNA_OSI$ensembl_gene_id,
                     ont       = "ALL", 
                     pvalueCutoff = 1)
 
-png("/Results/Barplot_osi.png",width = 2300, height = 1850,res = 200)
+png(file.path(R_RESULTS_DIR, "Barplot_OSI.png"),width = 2300, height = 1850,res = 200)
  barplot(ego_Osi,
                        font.size = 21.5,
                        title = "enrichGO osimertinib Overexpressed RNAs") +
@@ -310,11 +360,11 @@ png("/Results/Barplot_osi.png",width = 2300, height = 1850,res = 200)
 dev.off()
 #######Treeplot
 
-c<- enrichplot::pairwise_termsim(ego_ERLO) 
-dd<- enrichplot::pairwise_termsim(ego_Osi) 
+ego_ERLO_similarity <- enrichplot::pairwise_termsim(ego_ERLO)
+ego_OSI_similarity <- enrichplot::pairwise_termsim(ego_Osi)
 
-treeplot(c)
-treeplot(d)
+treeplot(ego_ERLO_similarity)
+treeplot(ego_OSI_similarity)
 
 
 
@@ -343,7 +393,7 @@ colnames(downRNA_ERLO_list) <- "Ensembl_ID_ERLO"
 
 #obtain External gene name to RNA up-regulated
 Biomart_common_RNA_ERLO_down <- get_gene_info(downRNA_ERLO_list)
-write.table(file = "Results/select_downRegulated_ERLO.csv", Biomart_common_RNA_ERLO_down, quote = F, sep= ",", row.names = F)
+write.table(file = file.path(R_RESULTS_DIR, "select_downRegulated_ERLO.csv"), Biomart_common_RNA_ERLO_down, quote = F, sep= ",", row.names = F)
 
 
 venn_OSI_downRNA <-  list( HCC4006 = HCC4006_OSIvsControl_RNA_down$genes,  #list to obtain common RNA in all residual cells
@@ -357,7 +407,7 @@ colnames(downRNA_OSI_list) <- "Ensembl_ID_OSI"
 
 #obtain External gene name to RNA down-regulated
 Biomart_common_RNA_OSI_down <- get_gene_info(downRNA_OSI_list )
-write.table(file = "Results/select_downRegulated_OSI.csv", Biomart_common_RNA_OSI_down, quote = F, sep= ",", row.names = F)
+write.table(file = file.path(R_RESULTS_DIR, "select_downRegulated_OSI.csv"), Biomart_common_RNA_OSI_down, quote = F, sep= ",", row.names = F)
 
 #######EGO Analysis####
 ego_ERLO_down <- enrichGO(gene      = Biomart_common_RNA_ERLO_down$ensembl_gene_id,
@@ -375,7 +425,7 @@ barplot(ego_ERLO_down,
 
 
 
-ego_Osidown <- enrichGO(gene      = Biomart_common_RNA_OSI_dowmn$ensembl_gene_id,
+ego_Osidown <- enrichGO(gene      = Biomart_common_RNA_OSI_down$ensembl_gene_id,
                     OrgDb     = org.Hs.eg.db,
                     keyType   = 'ENSEMBL',
                     ont       = "ALL", 
@@ -388,14 +438,17 @@ barplot(ego_Osidown,
         legend.title = element_text(size = 23.5,face = "bold"), 
         legend.text  =  element_text(size = 13.5,face = "bold"))
 
-png("Results/Barplot_down_osi.png",width = 3500, height = 2350,res = 250)
+png(file.path(R_RESULTS_DIR, "Treeplot_down_OSI.png"),width = 3500, height = 2350,res = 250)
 dd<- enrichplot::pairwise_termsim(ego_Osidown) 
 treeplot(dd,   showCategory = 22) + ggtitle("enrichGO by underregulated genes in osimertinib residual cells") +
   theme(plot.title   = element_text(size = 23.5,face = "bold"), 
         legend.title = element_text(size = 13.5,face = "bold"))
 dev.off()
 
-sessionInfo()
+writeLines(
+  capture.output(sessionInfo()),
+  file.path(R_RESULTS_DIR, "sessionInfo.txt")
+)
 
 
 
@@ -404,16 +457,15 @@ sessionInfo()
 
 
 
-library(rDGIdb)
+# ============================================================================
+# OPTIONAL / INCOMPLETE DOWNSTREAM ANALYSIS: DGIdb
+# ============================================================================
+# Retained as documentation of an exploratory downstream analysis.
+# External local input files used originally are not included in this repo.
 
-drugs_osi <- read.table("~/Downloads/gene_interaction_results-10_22_2024.tsv", sep = "\t", header = T)
+if (FALSE) {
+  library(rDGIdb)
 
-
-interactions_drugs <- read.csv("~/OneDrive - ASOCIACION PARA EVITAR LA CEGUERA EN MEXICO IAP/Tesis(APEC)/Transcrip_PP_Xim/RNA_seq_Penfigoide_Pterigion/DE_analysis/Data/interactions.tsv", sep = "\t", header = T)
-
-genes <- c(Biomart_common_RNA_ERLO$external_gene_name)
-
-resultFilter <- queryDGIdb(genes)
-
-
-
+  genes <- Biomart_common_RNA_ERLO$external_gene_name
+  resultFilter <- queryDGIdb(genes)
+}

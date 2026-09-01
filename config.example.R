@@ -1,132 +1,74 @@
 # ============================================================================
-# Configuration Template for TKIS Intrinsic Resistance Analysis
+# Configuration template for the differential-expression analysis
 # ============================================================================
-# 
-# PURPOSE:
-# This file demonstrates how to configure local and external file paths
-# for the RNA-seq differential expression analysis pipeline.
 #
-# INSTRUCTIONS:
-# 1. Copy this file to a new file: config.R
-# 2. Edit the paths in config.R to match your local environment
-# 3. Source config.R at the beginning of DGE_TKIS.R:
-#    source("config.R")
-# 4. Do NOT commit config.R to the repository (it is in .gitignore)
+# Copy this file to:
 #
+#   config.R
+#
+# Edit local paths in config.R. The real config.R is ignored by Git.
 # ============================================================================
 
-# Project root directory (relative path from repository root)
-# Change this if your working directory differs
-PROJECT_ROOT <- here::here()
+# Project root.
+# When DGE_TKIS.R is run with:
+#
+#   Rscript bin/DGE_TKIS.R
+#
+# PROJECT_ROOT_DEFAULT is resolved automatically from the script location.
+PROJECT_ROOT <- if (exists("PROJECT_ROOT_DEFAULT")) {
+  PROJECT_ROOT_DEFAULT
+} else {
+  normalizePath(".", mustWork = TRUE)
+}
 
 # ============================================================================
-# DATA PATHS
+# INPUT DATA
 # ============================================================================
 
-# Path to RSEM quantification results
-# RSEM output should be organized as: RSEM_DIR/sample_name/sample_name.genes.results
-RSEM_DIR <- "/path/to/external/RSEM/results"
+# Directory containing RSEM outputs organized as:
+#
+# RSEM_DIR/
+#   HCC827_OSI_1/
+#     HCC827_OSI_1.genes.results
+#   ...
+#
+# These are biological sample identifiers used in the downstream analysis.
+# Historical technical sequencing IDs (t01, t02, ...) were used during
+# preprocessing. The technical-to-biological mapping is not included here.
+RSEM_DIR <- "/path/to/RSEM/results"
 
-# Example: If your RSEM files are stored in a Google Drive:
-# RSEM_DIR <- "~/My\ Drive/RNAseq/Analisis_Expresion/RSEM"
-
-# Path to sample metadata file
-SAMPLE_METADATA_FILE <- file.path(PROJECT_ROOT, "Data", "sample_Persistent.txt")
-
-# ============================================================================
-# REFERENCE DATA PATHS (used in bash scripts)
-# ============================================================================
-
-# Path to human genome FASTA file (GRCh38)
-GENOME_FASTA <- "/path/to/reference/Homo_sapiens.GRCh38.dna.primary_assembly.fa"
-
-# Path to genome annotation GTF file (GRCh38)
-ANNOTATION_GTF <- "/path/to/reference/Homo_sapiens.GRCh38.83.gtf"
-
-# Path to STAR index directory (will be created if doesn't exist)
-STAR_INDEX_DIR <- "/path/to/STAR/index"
+SAMPLE_METADATA_FILE <- file.path(
+  PROJECT_ROOT,
+  "Data",
+  "sample_Persistent.txt"
+)
 
 # ============================================================================
-# INPUT DATA PATHS (bash preprocessing pipeline)
+# OUTPUT
 # ============================================================================
 
-# Raw FASTQ file directory
-FASTQ_INPUT_DIR <- "/path/to/rawdata/FASTQ"
-
-# Output directory for quality control (FastQC)
-FASTQC_OUTPUT_DIR <- file.path(PROJECT_ROOT, "Results", "QC", "fastqc_output")
-
-# Output directory for MultiQC
-MULTIQC_OUTPUT_DIR <- file.path(PROJECT_ROOT, "Results", "QC", "multiqc_output")
-
-# Directory for trimmed reads
-TRIMMED_OUTPUT_DIR <- file.path(PROJECT_ROOT, "Results", "Preprocessing", "trimmed")
-
-# Directory for unpaired reads
-UNPAIRED_OUTPUT_DIR <- file.path(PROJECT_ROOT, "Results", "Preprocessing", "unpaired")
-
-# Directory for STAR alignment outputs
-STAR_OUTPUT_DIR <- file.path(PROJECT_ROOT, "Results", "Alignment", "STAR")
-
-# Directory for RSEM outputs
-RSEM_OUTPUT_DIR <- file.path(PROJECT_ROOT, "Results", "Quantification", "RSEM")
-
-# ============================================================================
-# R ANALYSIS OUTPUT PATHS
-# ============================================================================
-
-# Directory for R analysis results (figures, tables)
-R_RESULTS_DIR <- file.path(PROJECT_ROOT, "Results", "DifferentialExpression")
+R_RESULTS_DIR <- file.path(PROJECT_ROOT, "Results")
 
 # ============================================================================
 # ANALYSIS PARAMETERS
 # ============================================================================
 
-# CPM (Counts Per Million) filtering threshold
-CPM_THRESHOLD <- 1
-MIN_SAMPLES_CPM <- 3  # Minimum number of samples exceeding CPM threshold
+# Preserve the original filtering rule:
+# log2-CPM > 1 in at least 3 samples.
+LOG_CPM_THRESHOLD <- 1
+MIN_SAMPLES_LOG_CPM <- 3
 
-# TMM normalization method (use "TMM" for Trimmed Mean of M-values)
+# edgeR normalization
 NORMALIZATION_METHOD <- "TMM"
 
-# Fold-change threshold (log2 scale)
+# Differential-expression thresholds
 LFC_THRESHOLD <- 1
-
-# False Discovery Rate (FDR) threshold
 FDR_THRESHOLD <- 0.05
-
-# Multiple testing correction method
-CORRECTION_METHOD <- "BH"  # Benjamini-Hochberg
+CORRECTION_METHOD <- "BH"
 
 # ============================================================================
-# BIOMART CONFIGURATION
+# BIOMART
 # ============================================================================
 
-# Biomart database version and dataset for human genes
-BIOMART_SPECIES <- "hsapiens"
+BIOMART_MART <- "ENSEMBL_MART_ENSEMBL"
 BIOMART_DATASET <- "hsapiens_gene_ensembl"
-
-# ============================================================================
-# SAMPLE SPECIFICATIONS
-# ============================================================================
-
-# Sample information can be modified here if needed
-# Otherwise, samples are loaded from SAMPLE_METADATA_FILE
-
-# Number of threads for parallel processing (adjust based on your system)
-N_THREADS <- 24
-
-# ============================================================================
-# OUTPUT FIGURE PARAMETERS
-# ============================================================================
-
-# DPI for PNG figures
-PNG_DPI <- 200
-
-# Default figure dimensions (width, height in inches)
-FIG_WIDTH_DEFAULT <- 12
-FIG_HEIGHT_DEFAULT <- 8
-
-# ============================================================================
-# END OF CONFIGURATION
-# ============================================================================

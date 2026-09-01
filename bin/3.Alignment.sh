@@ -2,15 +2,15 @@
 
 # ============================================================================
 # Script: 3.Alignment.sh
-# Purpose: Genome alignment and transcriptome quantification for RNA-seq reads
+# Purpose: Genome alignment of quality-filtered RNA-seq reads
 # Tools: STAR (Spliced Transcripts Alignment to a Reference)
 # Input: Quality-filtered paired-end FASTQ files
-# Output: BAM files (coordinate-sorted), transcriptome SAM files for RSEM
+# Output: Coordinate-sorted genome BAM files and STAR alignment metrics
 # ============================================================================
 
-# Load configuration from config.sh
-# Edit config.sh with your local paths before running this script
-source ../config.sh
+# Load configuration relative to this script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/../config.sh"
 
 # ============================================================================
 # Step 1: Generate STAR genome index
@@ -26,22 +26,26 @@ echo "Output index directory: ${INDEX_DIR}"
 
 mkdir -p "${INDEX_DIR}"
 
-STAR \
-  --runThreadN "${N_THREADS}" \
-  --runMode genomeGenerate \
-  --genomeDir "${INDEX_DIR}" \
-  --genomeFastaFiles "${GENOME_FASTA}" \
-  --sjdbGTFfile "${ANNOTATION_GTF}" \
-  --sjdbOverhang "${STAR_OVERHANG}"
+if [ -s "${INDEX_DIR}/Genome" ]; then
+  echo "Existing STAR index detected; skipping genomeGenerate."
+else
+  STAR \
+    --runThreadN "${N_THREADS}" \
+    --runMode genomeGenerate \
+    --genomeDir "${INDEX_DIR}" \
+    --genomeFastaFiles "${GENOME_FASTA}" \
+    --sjdbGTFfile "${ANNOTATION_GTF}" \
+    --sjdbOverhang "${STAR_OVERHANG}"
 
-echo "Step 1 complete: Genome index created."
+  echo "Step 1 complete: Genome index created."
+fi
 
 # ============================================================================
 # Step 2: Align reads to genome using STAR
 # ============================================================================
 # Align quality-filtered reads to the reference genome
-# - Generates coordinate-sorted BAM files for downstream analysis
-# - Generates transcriptome BAM files for RSEM quantification
+# - Generates coordinate-sorted BAM files for alignment QC and downstream inspection
+# - RSEM quantification is performed separately in 4.RSEM.sh
 # Runtime: ~30-60 minutes per sample depending on file size and resources
 
 echo ""
@@ -51,8 +55,8 @@ echo "Output directory: ${STAR_OUTPUT_DIR}"
 
 mkdir -p "${STAR_OUTPUT_DIR}"
 
-for sample_num in $(seq -f "%02g" 1 "${N_SAMPLES}"); do
-  sample_name="${SAMPLE_PREFIX}${sample_num}"
+for i in $(seq 1 "${N_SAMPLES}"); do
+  sample_name=$(printf "%s%02d" "${SAMPLE_PREFIX}" "${i}")
   
   r1_in="${TRIMMED_DIR}/${sample_name}-R1.clean.final.fastq.gz"
   r2_in="${TRIMMED_DIR}/${sample_name}-R2.clean.final.fastq.gz"
@@ -72,10 +76,9 @@ for sample_num in $(seq -f "%02g" 1 "${N_SAMPLES}"); do
     --genomeDir "${INDEX_DIR}" \
     --runThreadN "${N_THREADS}" \
     --readFilesIn "${r1_in}" "${r2_in}" \
-    --readFilesCommand zcat \
+    --readFilesCommand gzip -dc \
     --outFileNamePrefix "${STAR_OUTPUT_DIR}/${sample_name}." \
-    --outSAMtype BAM "${STAR_BAM_SORT}" \
-    --quantMode TranscriptomeSAM
+    --outSAMtype BAM "${STAR_BAM_SORT}"
     
   echo "Alignment complete for: ${sample_name}"
   
@@ -88,7 +91,7 @@ echo "============================================================"
 echo "Alignment pipeline complete!"
 echo "============================================================"
 echo "Output BAM files (coordinate-sorted): ${STAR_OUTPUT_DIR}/*.Aligned.sortedByCoord.out.bam"
-echo "Output transcriptome SAM (for RSEM): ${STAR_OUTPUT_DIR}/*.Aligned.toTranscriptome.out.sam"
+echo "STAR Log.final.out files provide per-sample alignment metrics."
 
 # ============================================================================
 # END OF SCRIPT

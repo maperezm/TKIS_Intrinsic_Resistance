@@ -8,13 +8,14 @@
 # Output: Quality-trimmed paired and unpaired FASTQ files
 # ============================================================================
 
-# Load configuration from config.sh
-# Edit config.sh with your local paths before running this script
-source ../config.sh
+# Load configuration relative to this script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/../config.sh"
 
 # Create output directories
 mkdir -p "${TRIMMED_DIR}"
 mkdir -p "${UNPAIRED_DIR}"
+mkdir -p "${LOG_DIR}"
 
 # ============================================================================
 # Step 1: Quality filtering with Trimmomatic (AVGQUAL)
@@ -26,8 +27,8 @@ mkdir -p "${UNPAIRED_DIR}"
 
 echo "Step 1: Quality filtering with Trimmomatic (AVGQUAL:${AVGQUAL})..."
 
-for sample_num in $(seq -f "%02g" 1 "${N_SAMPLES}"); do
-  sample_name="${SAMPLE_PREFIX}${sample_num}"
+for i in $(seq 1 "${N_SAMPLES}"); do
+  sample_name=$(printf "%s%02d" "${SAMPLE_PREFIX}" "${i}")
   
   r1_input="${DATA_INPUT_DIR}/${sample_name}-R1.fastq.gz"
   r2_input="${DATA_INPUT_DIR}/${sample_name}-R2.fastq.gz"
@@ -45,7 +46,7 @@ for sample_num in $(seq -f "%02g" 1 "${N_SAMPLES}"); do
     "${r1_paired}" "${r1_unpaired}" \
     "${r2_paired}" "${r2_unpaired}" \
     AVGQUAL:${AVGQUAL} \
-    2>&1 | tee -a "${DATA_INPUT_DIR}/quality_trimming_log.txt"
+    2>&1 | tee -a "${LOG_DIR}/quality_trimming_log.txt"
     
 done
 
@@ -61,8 +62,8 @@ echo "Step 1 complete: Quality filtering finished."
 echo ""
 echo "Step 2: Illumina adapter removal with cutadapt..."
 
-for sample_num in $(seq -f "%02g" 1 "${N_SAMPLES}"); do
-  sample_name="${SAMPLE_PREFIX}${sample_num}"
+for i in $(seq 1 "${N_SAMPLES}"); do
+  sample_name=$(printf "%s%02d" "${SAMPLE_PREFIX}" "${i}")
   
   r1_in="${TRIMMED_DIR}/${sample_name}-R1.paired.fastq.gz"
   r2_in="${TRIMMED_DIR}/${sample_name}-R2.paired.fastq.gz"
@@ -79,7 +80,7 @@ for sample_num in $(seq -f "%02g" 1 "${N_SAMPLES}"); do
     -o "${r1_clean}" \
     -p "${r2_clean}" \
     "${r1_in}" "${r2_in}" \
-    2>&1 | tee -a "${DATA_INPUT_DIR}/adapter_trimming_log.txt"
+    2>&1 | tee -a "${LOG_DIR}/adapter_trimming_log.txt"
     
 done
 
@@ -95,8 +96,8 @@ echo "Step 2 complete: Adapter removal finished."
 echo ""
 echo "Step 3: Minimum length filtering with Trimmomatic (MINLEN:${MINLEN})..."
 
-for sample_num in $(seq -f "%02g" 1 "${N_SAMPLES}"); do
-  sample_name="${SAMPLE_PREFIX}${sample_num}"
+for i in $(seq 1 "${N_SAMPLES}"); do
+  sample_name=$(printf "%s%02d" "${SAMPLE_PREFIX}" "${i}")
   
   r1_in="${TRIMMED_DIR}/${sample_name}-R1.clean.paired.fastq.gz"
   r2_in="${TRIMMED_DIR}/${sample_name}-R2.clean.paired.fastq.gz"
@@ -114,7 +115,7 @@ for sample_num in $(seq -f "%02g" 1 "${N_SAMPLES}"); do
     "${r1_final}" "${r1_unpaired_final}" \
     "${r2_final}" "${r2_unpaired_final}" \
     MINLEN:${MINLEN} \
-    2>&1 | tee -a "${DATA_INPUT_DIR}/minlen_filtering_log.txt"
+    2>&1 | tee -a "${LOG_DIR}/minlen_filtering_log.txt"
     
 done
 
@@ -126,9 +127,9 @@ echo "============================================================"
 echo "Quality-filtered reads are in: ${TRIMMED_DIR}"
 echo "Unpaired reads are in: ${UNPAIRED_DIR}"
 echo "Log files:"
-echo "  - ${DATA_INPUT_DIR}/quality_trimming_log.txt"
-echo "  - ${DATA_INPUT_DIR}/adapter_trimming_log.txt"
-echo "  - ${DATA_INPUT_DIR}/minlen_filtering_log.txt"
+echo "  - ${LOG_DIR}/quality_trimming_log.txt"
+echo "  - ${LOG_DIR}/adapter_trimming_log.txt"
+echo "  - ${LOG_DIR}/minlen_filtering_log.txt"
 
 # ============================================================================
 # END OF SCRIPT
