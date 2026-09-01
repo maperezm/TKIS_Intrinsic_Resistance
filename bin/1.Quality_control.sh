@@ -8,9 +8,9 @@
 # Output: FastQC reports (.html, .zip), MultiQC summary
 # ============================================================================
 
-# Load configuration from config.sh
-# Edit config.sh with your local paths before running this script
-source ../config.sh
+# Load configuration relative to this script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/../config.sh"
 
 # Create output directories
 mkdir -p "${FASTQC_OUTPUT}"

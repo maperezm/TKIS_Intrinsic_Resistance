@@ -10,9 +10,8 @@
 # INSTRUCTIONS:
 # 1. Copy this file to a new file: config.sh
 # 2. Edit the paths in config.sh to match your local environment
-# 3. Source config.sh at the beginning of each bash script:
-#    source ../config.sh
-# 4. Do NOT commit config.sh to the repository (it is in .gitignore)
+# 3. Pipeline scripts load config.sh relative to their own location
+# 4. Do NOT commit config.sh to the repository
 #
 # ============================================================================
 
@@ -73,6 +72,14 @@ STAR_OUTPUT_DIR="${PROJECT_ROOT}/Results/Alignment"
 # RSEM quantification output directory
 RSEM_OUTPUT_DIR="${PROJECT_ROOT}/Results/Quantification/RSEM"
 
+# Dedicated RSEM reference directory and reference prefix.
+# RSEM will build its own STAR index here from the same GRCh38 FASTA/GTF.
+RSEM_REFERENCE_DIR="${PROJECT_ROOT}/reference/rsem"
+RSEM_REFERENCE_PREFIX="${RSEM_REFERENCE_DIR}/GRCh38_rsem"
+
+# Pipeline logs
+LOG_DIR="${PROJECT_ROOT}/Results/logs"
+
 # ============================================================================
 # COMPUTATIONAL RESOURCES
 # ============================================================================
@@ -84,11 +91,12 @@ N_THREADS=32
 # SAMPLE INFORMATION
 # ============================================================================
 
-# Number of samples to process (adjust if different from 18)
+# Historical preprocessing used 18 technical sequencing IDs.
+# These technical IDs are separate from downstream biological sample names.
 N_SAMPLES=18
 
-# Sample name prefix (samples will be named: t001, t002, ..., t018)
-SAMPLE_PREFIX="t0"
+# Technical sample names: t01, t02, ..., t18
+SAMPLE_PREFIX="t"
 
 # ============================================================================
 # TRIMMOMATIC PARAMETERS
